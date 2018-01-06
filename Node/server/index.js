@@ -10,16 +10,22 @@ const app = express()
 
 const Server = http.createServer(app)
 
-mongoose.connect('mongodb://localhost/c7')
+mongoose.connect('mongodb://localhost/proyecto')
 
 
 app.use(express.static('client'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true}))
-app.use('/users', Routing)
+app.use('/', Routing)
 
 Server.listen(PORT, function() {
   console.log('Server is listeng on port: ' + PORT)
+  
+
+
 })
+
+
+
 
 

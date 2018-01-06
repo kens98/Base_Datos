@@ -25,10 +25,15 @@
         $('.loginButton').on('click', function(event) {
             if (nombreUsuario.val() != "" && pass.val() != "") {
                 $.post('/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
+                    alert(response);
                     if (response == "Validado") {
                         window.location.href = "http://localhost:8082/main.html"
                     }
                 })
+                
+                /*$.post('/login',{'user':nombreUsuario.val(),'pass':'ia'},function(res){
+                    alert(res);
+                })*/
             } else {
                 alert("Complete todos los campos")
             }
