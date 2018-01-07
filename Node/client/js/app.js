@@ -28,7 +28,31 @@ class EventManager {
                 alert( "error"+err.responseText );
               })
     }
-    
+    actualizarEvento(evento){
+        let id = evento.id,
+            start = moment(evento.start).format('YYYY-MM-DD HH:mm:ss'),
+            end = moment(evento.end).format('YYYY-MM-DD HH:mm:ss'),
+            
+
+        start_date = start.substr(0,10)
+        end_date = end.substr(0,10)
+        start_hour = start.substr(11,8)
+        end_hour = end.substr(11,8)
+
+
+        let ev = {
+                    start: start_date,
+                    end: end_date,
+                    id:id
+                }
+        $.post(this.urlBase+'/update',ev,(response)=>{
+            alert(response)
+            self.inicializarCalendario(response)
+        }).fail(function(err) {
+                alert( "error"+err.responseText );
+              })
+    }
+
     inicializarCalendario(eventos) {
         $('.calendario').fullCalendar({
             header: {

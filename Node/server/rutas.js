@@ -84,6 +84,18 @@ Router.post('/events/delete/:id',(req,res)=>{
 	})
 
 })
+Router.post('/events/update',(req,res)=>{
+	mod.EventModel.updateOne(
+		{id:req.body.id},
+		{$set:{start:req.body.start,end:req.body.end}},
+		function(err,task){
+		if(err){
+			res.send("error "+err)
+		}
+		res.send("actualizado "+req.body.id)
+	})
+
+})
 
 //Obtener todos los usuarios
 Router.get('/all', function(req, res) {
