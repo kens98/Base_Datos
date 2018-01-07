@@ -2,7 +2,6 @@ const Router = require('express').Router();
 const mod = require('./model.js')
 
 
-
 Router.post('/new',function(req,res){
 	users=new mod.UserModel({
 		userId: Math.floor(Math.random() * 50),
