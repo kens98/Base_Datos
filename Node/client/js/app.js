@@ -8,16 +8,62 @@ class EventManager {
     }
 
     obtenerDataInicial() {
+        let self=this;
         let url = this.urlBase + "/all"
-        $.get(url, (response) => {
-            this.inicializarCalendario(response)
-        })
+        $.post(url,{},function(response) {
+            //alert(response)
+            self.inicializarCalendario(response)
+
+        }) /* .fail(function(err) {
+                alert( "error"+err.responseText );
+              })*/
     }
 
     eliminarEvento(evento) {
         let eventId = evento.id
         $.post('/events/delete/'+eventId, {id: eventId}, (response) => {
             alert(response)
+            self.inicializarCalendario(response)
+        }).fail(function(err) {
+                alert( "error"+err.responseText );
+              })
+    }
+    
+    inicializarCalendario(eventos) {
+        $('.calendario').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,basicDay'
+            },
+            defaultDate: '2018-01-01',
+            navLinks: true,
+            editable: true,
+            eventLimit: true,
+            droppable: true,
+            dragRevertDuration: 0,
+            timeFormat: 'H:mm',
+            eventDrop: (event) => {
+                this.actualizarEvento(event)
+            },
+            events: eventos,
+            eventDragStart: (event,jsEvent) => {
+                $('.delete').find('img').attr('src', "img/trash-open.png");
+                $('.delete').css('background-color', '#a70f19')
+            },
+            eventDragStop: (event,jsEvent) => {
+                var trashEl = $('.delete');
+                var ofs = trashEl.offset();
+                var x1 = ofs.left;
+                var x2 = ofs.left + trashEl.outerWidth(true);
+                var y1 = ofs.top;
+                var y2 = ofs.top + trashEl.outerHeight(true);
+                if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
+                    jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
+                        this.eliminarEvento(event)
+                        $('.calendario').fullCalendar('removeEvents', event.id);
+                    }
+            }
         })
     }
 
@@ -47,7 +93,9 @@ class EventManager {
                 }
                 $.post(url, ev, (response) => {
                     alert(response)
-                })
+                }).fail(function(err) {
+                        alert( "error"+err.responseText );
+                    })
                 $('.calendario').fullCalendar('renderEvent', ev)
             } else {
                 alert("Complete los campos obligatorios para el evento")
@@ -80,43 +128,7 @@ class EventManager {
         })
     }
 
-    inicializarCalendario(eventos) {
-        $('.calendario').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,basicDay'
-            },
-            defaultDate: '2016-11-01',
-            navLinks: true,
-            editable: true,
-            eventLimit: true,
-            droppable: true,
-            dragRevertDuration: 0,
-            timeFormat: 'H:mm',
-            eventDrop: (event) => {
-                this.actualizarEvento(event)
-            },
-            events: eventos,
-            eventDragStart: (event,jsEvent) => {
-                $('.delete').find('img').attr('src', "img/trash-open.png");
-                $('.delete').css('background-color', '#a70f19')
-            },
-            eventDragStop: (event,jsEvent) => {
-                var trashEl = $('.delete');
-                var ofs = trashEl.offset();
-                var x1 = ofs.left;
-                var x2 = ofs.left + trashEl.outerWidth(true);
-                var y1 = ofs.top;
-                var y2 = ofs.top + trashEl.outerHeight(true);
-                if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-                    jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-                        this.eliminarEvento(event)
-                        $('.calendario').fullCalendar('removeEvents', event.id);
-                    }
-                }
-            })
-        }
-    }
+    
+}
 
     const Manager = new EventManager()
